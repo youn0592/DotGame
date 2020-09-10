@@ -8,6 +8,7 @@ project "Game"
 	kind			"WindowedApp"
 
 	files {
+		"Game/Source/**.cpp",
 		"premake5.lua",
 		"GenerateProjectFiles.bat",
 	}
