@@ -1,6 +1,13 @@
-#include <Windows.h>
+#include "Framework.h"
+
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    int bp = 1;
+    fw::FWCore* pFramework = new fw::FWCore();
+
+    pFramework->Init(600, 600);
+    pFramework->Run();
+    pFramework->Shutdown();
+
+    delete pFramework;
 }
