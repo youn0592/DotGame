@@ -3,6 +3,7 @@ workspace "Game"
 	platforms		{ "x64" }
 	location		"build"
 	characterset	"MBCS"
+	startproject	"Game"
 
 project "Game"
 	kind			"WindowedApp"

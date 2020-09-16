@@ -1,12 +1,16 @@
 #include "Framework.h"
 
+#include "Game.h"
+
+using namespace fw;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    fw::FWCore* pFramework = new fw::FWCore();
+    FWCore* pFramework = new FWCore();
+    Game* pGame = new Game();
 
     pFramework->Init(600, 600);
-    pFramework->Run();
+    pFramework->Run(pGame);
     pFramework->Shutdown();
 
     delete pFramework;
