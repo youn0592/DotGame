@@ -8,10 +8,13 @@ workspace "Game"
 project "Game"
 	kind			"WindowedApp"
 	location		"build/Game"
+	debugdir		"Game"
 
 	files {
 		"Game/Source/**.cpp",
 		"Game/Source/**.h",
+		"Game/Data/**.vert",
+		"Game/Data/**.frag",
 		"premake5.lua",
 		"GenerateProjectFiles.bat",
 	}
