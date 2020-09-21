@@ -5,10 +5,13 @@ namespace fw {
 class Mesh
 {
 public:
-    Mesh();
+    Mesh(int type);
     virtual ~Mesh();
 
-    void Draw();
+    void Draw(float x, float y, ShaderProgram* pShader);
+
+    void MakeAnimal();
+    void MakeHuman();
 
 protected:
     GLuint m_VBO = 0;

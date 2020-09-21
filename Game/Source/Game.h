@@ -13,6 +13,10 @@ public:
 
 
 protected:
+    float m_posX = 0;
+    float m_posY = 0;
+
     fw::ShaderProgram* m_pShader = nullptr;
-    fw::Mesh* m_pMesh = nullptr;
+
+    std::vector<fw::GameObject*> m_pGameObjects;
 };
