@@ -35,7 +35,9 @@ project "Framework"
 
 	files{
 		"Framework/Source/**.cpp",
-		"Framework/Source/**.h"
+		"Framework/Source/**.h",
+		"FrameWork/Libraries/**.h",
+		"Framework/Libraries/**.cpp"
 	}
 
 	includedirs{

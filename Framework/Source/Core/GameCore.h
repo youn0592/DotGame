@@ -10,7 +10,7 @@ namespace fw {
         GameCore(FWCore* pFramework);
         virtual ~GameCore();
 
-        virtual void Update() = 0;
+        virtual void Update(float deltaTime) = 0;
         virtual void Draw() = 0;
 
     protected:

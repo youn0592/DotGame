@@ -25,6 +25,7 @@ double GetSystemTime()
     QueryPerformanceFrequency( (LARGE_INTEGER*)&freq );
     QueryPerformanceCounter( (LARGE_INTEGER*)&time );
 
+
     double timeseconds = (double)time / freq;
 
     return timeseconds;

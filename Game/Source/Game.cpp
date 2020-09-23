@@ -23,14 +23,19 @@ void Game::Init()
     m_pShader = new fw::ShaderProgram("Data/basic.vert","Data/basic.frag");
     fw::GameObject* m_pHuman = new fw::GameObject(0);
     fw::GameObject* m_pAnimal = new fw::GameObject(1);
+    m_pImGuiManager = new fw::ImGuiManager(m_pFrameWork);
+
+    m_pImGuiManager->Init();
 
     m_pGameObjects.push_back(m_pHuman);
     m_pGameObjects.push_back(m_pAnimal);
 
 }
 
-void Game::Update()
+void Game::Update(float deltaTime)
 {
+    m_pImGuiManager->StartFrame(deltaTime);
+    ImGui::ShowDemoWindow();
 }
 
 void Game::Draw()
@@ -45,5 +50,7 @@ void Game::Draw()
     {
         m_pGameObjects.at(i)->Draw(m_posX, m_posY, m_pShader);
     }
+
+    m_pImGuiManager->EndFrame();
 
 }
