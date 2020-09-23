@@ -3,7 +3,7 @@
 class Game : public fw::GameCore
 {
 public:
-    Game();
+    Game(fw::FWCore* pFramework);
     virtual ~Game() override;
 
     void Init();

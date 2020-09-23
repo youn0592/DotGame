@@ -19,6 +19,7 @@ Mesh::Mesh(int type)
 
 Mesh::~Mesh()
 {
+
 }
 
 void Mesh::Draw(float x, float y, ShaderProgram* pShader)
@@ -37,6 +38,22 @@ void Mesh::Draw(float x, float y, ShaderProgram* pShader)
 
     // Draw the primitive.
     glDrawArrays( m_PrimitiveType, 0, m_NumVertices );
+}
+
+void Mesh::CreateShape(int numVertices, int primitiveType, float* pVertices)
+{
+    // Generate a buffer for our vertex attributes.
+    glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
+
+    // Set this VBO to be the currently active one.
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+    m_NumVertices = numVertices;
+    m_PrimitiveType = primitiveType;
+
+    // Copy our attribute data into the VBO.
+    int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, pVertices, GL_STATIC_DRAW);
 }
 
 void Mesh::MakeAnimal()

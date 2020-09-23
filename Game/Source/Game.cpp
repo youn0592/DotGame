@@ -1,8 +1,9 @@
 #include "Framework.h"
 #include "Game.h"
 
-Game::Game()
+Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
+
 }
 
 Game::~Game()
@@ -14,6 +15,7 @@ Game::~Game()
     {
         delete m_pGameObjects.at(i);
     }
+
 }
 
 void Game::Init()
@@ -24,6 +26,7 @@ void Game::Init()
 
     m_pGameObjects.push_back(m_pHuman);
     m_pGameObjects.push_back(m_pAnimal);
+
 }
 
 void Game::Update()
@@ -42,4 +45,5 @@ void Game::Draw()
     {
         m_pGameObjects.at(i)->Draw(m_posX, m_posY, m_pShader);
     }
+
 }

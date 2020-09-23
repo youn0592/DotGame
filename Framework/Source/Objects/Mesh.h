@@ -10,6 +10,8 @@ public:
 
     void Draw(float x, float y, ShaderProgram* pShader);
 
+    void CreateShape(int numVertices, int primitiveType, float* pVertices);
+
     void MakeAnimal();
     void MakeHuman();
 

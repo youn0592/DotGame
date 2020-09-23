@@ -3,6 +3,11 @@
 
 namespace fw {
 
+    GameCore::GameCore(FWCore* pFramework)
+    {
+        m_pFrameWork = pFramework;
+    }
+
     GameCore::~GameCore()
     {
 
