@@ -8,6 +8,7 @@ public:
     Mesh(int type);
     virtual ~Mesh();
 
+    void SetUniform1F(ShaderProgram* pShader, char* name, float value);
     void Draw(float x, float y, ShaderProgram* pShader);
 
     void CreateShape(int numVertices, int primitiveType, float* pVertices);
