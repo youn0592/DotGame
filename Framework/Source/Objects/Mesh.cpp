@@ -1,4 +1,4 @@
-#include "FrameworkPCH.h"
+#include "Framework.h"
 #include "Utility/ShaderProgram.h"
 #include "Utility/Helpers.h"
 
@@ -18,6 +18,11 @@ Mesh::Mesh(int type)
     }
 }
 
+Mesh::Mesh(int numVertices, int primitiveType, float* pVertices)
+{
+    CreateShape(numVertices, primitiveType, pVertices);
+}
+
 Mesh::~Mesh()
 {
 
@@ -30,6 +35,18 @@ void Mesh::SetUniform1F(ShaderProgram* pShader, char* name, float value)
         int loc = glGetUniformLocation(pShader->GetProgram(), name);
         glUniform1f(loc, value);
     }
+}
+
+void Mesh::SetUniform2F(ShaderProgram* pShader, char* name, float value1, float value2)
+{
+    int loc = glGetUniformLocation(pShader->GetProgram(), name);
+    glUniform2f(loc, value1, value2);
+}
+
+void Mesh::SetUniform2F(ShaderProgram* pShader, char* name, vec2 values)
+{
+    int loc = glGetUniformLocation(pShader->GetProgram(), name);
+    glUniform2f(loc, values.posX, values.posY);
 }
 
 void Mesh::Draw(float x, float y, ShaderProgram* pShader)
@@ -46,10 +63,13 @@ void Mesh::Draw(float x, float y, ShaderProgram* pShader)
     // Describe the attributes in the VBO to OpenGL.
     glVertexAttribPointer( loc, 2, GL_FLOAT, GL_FALSE, 8, (void*)0 );
 
-    {
+   {
         SetUniform1F(pShader, "u_Time", (float)GetSystemTimeSinceGameStart());
+        SetUniform2F(pShader, "u_Pos", x, y);
     }
 
+    
+    
     // Draw the primitive.
     glDrawArrays( m_PrimitiveType, 0, m_NumVertices );
 }

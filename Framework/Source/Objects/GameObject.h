@@ -1,19 +1,27 @@
 #pragma once
 namespace fw {
+
+    class GameCore;
+    class Mesh;
+    class ShaderProgram;
+
     class GameObject
     {
     public:
-        GameObject(int type);
+        GameObject(float x, float y, Mesh* pMesh, ShaderProgram* pShader, GameCore* pGameCore);
         ~GameObject();
 
         void Update();
-        void Draw(float x, float y, fw::ShaderProgram* pShader);
+        void Draw();
+
+        void GetFrameWork();
 
     protected:
-        float m_positionX = 0;
-        float m_positionY = 0;
+        float m_posX = 0;
+        float m_posY = 0;
 
-        fw::Mesh* m_pMesh = nullptr;
-        fw::ShaderProgram* m_pShader = nullptr;
+        Mesh* m_pMesh = nullptr;
+        ShaderProgram* m_pShader = nullptr;
+        GameCore* m_pGameCore = nullptr;
     };
 }

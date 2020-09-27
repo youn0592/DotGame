@@ -13,6 +13,8 @@ namespace fw {
         virtual void Update(float deltaTime) = 0;
         virtual void Draw() = 0;
 
+        fw::FWCore* GetFramework();
+
     protected:
         FWCore* m_pFrameWork = nullptr;
     };

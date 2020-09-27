@@ -1,5 +1,7 @@
 #pragma once
 
+class Player;
+
 class Game : public fw::GameCore
 {
 public:
@@ -7,6 +9,9 @@ public:
     virtual ~Game() override;
 
     void Init();
+
+    void CreateMesh();
+
     virtual void Update(float deltaTime) override;
     virtual void Draw() override;
 
@@ -18,6 +23,12 @@ protected:
 
     fw::ShaderProgram* m_pShader = nullptr;
     fw::ImGuiManager* m_pImGuiManager = nullptr;
+
+
+    Player* m_pPlayer = nullptr;
+
+    fw::Mesh* m_pMeshHuman = nullptr;
+    fw::Mesh* m_pMeshAnimal = nullptr;
 
     std::vector<fw::GameObject*> m_pGameObjects;
 };

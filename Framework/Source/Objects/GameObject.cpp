@@ -2,30 +2,30 @@
 #include "GameObject.h"
 
 namespace fw {
-    GameObject::GameObject(int type)
+    GameObject::GameObject(float x, float y, Mesh* pMesh, ShaderProgram* pShader, GameCore* pGameCore)
     {
-        m_pMesh = new fw::Mesh(type);
+        m_pMesh = pMesh;
+        m_pShader = pShader;
+        m_posX = x;
+        m_posY = y;
+        m_pGameCore = pGameCore;
     }
 
     GameObject::~GameObject()
     {
-        if(m_pMesh != nullptr)
-        {
-            delete m_pMesh;
-        }
-
-        if(m_pShader != nullptr)
-        {
-            delete m_pShader;
-        }
     }
 
     void GameObject::Update()
     {
     }
 
-    void GameObject::Draw(float x, float y, fw::ShaderProgram* pShader)
+    void GameObject::Draw()
     {
-      m_pMesh->Draw(x, y, pShader);
+      m_pMesh->Draw(m_posX, m_posY, m_pShader);
+    }
+
+    void GameObject::GetFrameWork()
+    {
+        m_pGameCore->GetFramework();
     }
 }

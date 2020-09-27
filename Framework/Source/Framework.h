@@ -17,5 +17,6 @@
 #include "Objects/Mesh.h"
 #include "Objects/GameObject.h"
 #include "UI/ImGuiManager.h"
+#include "Math/Vector.h"
 
 #endif //__Framework_H__

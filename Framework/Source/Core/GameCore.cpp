@@ -13,4 +13,8 @@ namespace fw {
 
     }
 
+    fw::FWCore* GameCore::GetFramework()
+    {
+        return m_pFrameWork;
+    }
 } //Namespace fw
