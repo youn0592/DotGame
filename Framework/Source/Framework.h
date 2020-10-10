@@ -18,5 +18,7 @@
 #include "Objects/GameObject.h"
 #include "UI/ImGuiManager.h"
 #include "Math/Vector.h"
+#include "EventSystem/Event.h"
+#include "EventSystem/EventManager.h"
 
 #endif //__Framework_H__

@@ -1,13 +1,20 @@
 #pragma once
-#include "../Objects/GameObject.h"
 
-class vec2
-{
-public:
+namespace fw {
 
-    vec2(float x, float y);
-    ~vec2();
+    class vec2
+    {
+    public:
+        vec2() { x = 0; y = 0; }
+        vec2(float nx, float ny) { x = nx; y = ny; }
 
-    float posX;
-    float posY;
-};
+        vec2 operator*(float o) const { return vec2(x * o, y * o); }
+
+        vec2 operator+=(const vec2& o) { x += o.x; y += o.y; return *this; }
+
+    public:
+        float x;
+        float y;
+    };
+
+} // namespace fw

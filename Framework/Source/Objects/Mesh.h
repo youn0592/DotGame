@@ -8,9 +8,8 @@ namespace fw {
 class Mesh
 {
 public:
-    Mesh(int type);
 
-    Mesh(int numVertices, int primitiveType, float* pVertices);
+    Mesh(int numVertices, int primitiveType, const float* pVertices);
 
     virtual ~Mesh();
 
@@ -19,12 +18,9 @@ public:
     void SetUniform2F(ShaderProgram* pShader, char* name, vec2 values);
 
 
-    void Draw(float x, float y, ShaderProgram* pShader);
+    void Draw(vec2 pos, ShaderProgram* pShader);
 
-    void CreateShape(int numVertices, int primitiveType, float* pVertices);
-
-    void MakeAnimal();
-    void MakeHuman();
+    void CreateShape(int numVertices, int primitiveType, const float* pVertices);
 
 protected:
     GLuint m_VBO = 0;

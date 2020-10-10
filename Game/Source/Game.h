@@ -12,6 +12,7 @@ public:
 
     void CreateMesh();
 
+    virtual void OnEvent(fw::Event* pEvent) override;
     virtual void Update(float deltaTime) override;
     virtual void Draw() override;
 
@@ -25,10 +26,12 @@ protected:
     fw::ImGuiManager* m_pImGuiManager = nullptr;
 
 
-    Player* m_pPlayer = nullptr;
+    //Player* m_pPlayer = nullptr;
 
     fw::Mesh* m_pMeshHuman = nullptr;
     fw::Mesh* m_pMeshAnimal = nullptr;
 
-    std::vector<fw::GameObject*> m_pGameObjects;
+    std::vector<fw::GameObject*> m_pObjects;
+
+    fw::EventManager* m_pEventManager = nullptr;
 };

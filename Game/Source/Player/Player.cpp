@@ -1,7 +1,9 @@
-#include "Framework.h"
-#include "Player.h"
+#include "GamePCH.h"
 
-Player::Player(float x, float y, fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::GameCore* pGameCore) : fw::GameObject(x, y, pMesh, pShader, pGameCore)
+#include "Player/Player.h"
+
+Player::Player(std::string name, vec2 pos, fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::GameCore* pGameCore)
+    : fw::GameObject(name, pos, pMesh, pShader, pGameCore)
 {
 }
 
@@ -9,27 +11,28 @@ Player::~Player()
 {
 }
 
-
 void Player::Update(float deltaTime)
 {
+    float speed = 2.0f;
 
-    if(m_pGameCore->GetFramework()->IsKeyDown('W') == true)
+    vec2 dir;
+
+    if (m_pGameCore->GetFramework()->IsKeyDown('A'))
     {
-        m_posY += SPEED * deltaTime;
+        dir.x = -1;
+    }
+    if (m_pGameCore->GetFramework()->IsKeyDown('D'))
+    {
+        dir.x = 1;
+    }
+    if (m_pGameCore->GetFramework()->IsKeyDown('W'))
+    {
+        dir.y = 1;
+    }
+    if (m_pGameCore->GetFramework()->IsKeyDown('S'))
+    {
+        dir.y = -1;
     }
 
-    if (m_pGameCore->GetFramework()->IsKeyDown('A') == true)
-    {
-        m_posX -= SPEED * deltaTime;
-    }
-
-    if (m_pGameCore->GetFramework()->IsKeyDown('S') == true)
-    {
-        m_posY -= SPEED * deltaTime;
-    }
-
-    if (m_pGameCore->GetFramework()->IsKeyDown('D') == true)
-    {
-        m_posX += SPEED * deltaTime;
-    }
+    m_Position += dir * speed * deltaTime;
 }

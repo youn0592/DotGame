@@ -5,6 +5,9 @@ workspace "Game"
 	characterset	"MBCS"
 	startproject	"Game"
 
+	filter			"configurations:Debug"
+		symbols			"on"
+
 project "Game"
 	kind			"WindowedApp"
 	location		"build/Game"
@@ -19,7 +22,6 @@ project "Game"
 		"GenerateProjectFiles.bat",
 	}
 	includedirs{
-		"Framework/Source",
 		"Game/Source",
 	}
 
@@ -27,6 +29,9 @@ project "Game"
 		"Framework",
 		"opengl32"
 	}
+
+	pchheader "GamePCH.h"
+	pchsource "Game/Source/WinMain.cpp"
 		
 project "Framework"
 
@@ -43,3 +48,9 @@ project "Framework"
 	includedirs{
 		"Framework/Source",
 	}
+
+	pchheader "FrameworkPCH.h"
+	pchsource "Framework/Source/Core/FWCore.cpp"
+
+	filter "files:Framework/Libraries/imgui/*.cpp"
+		flags {'NoPCH'}

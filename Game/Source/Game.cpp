@@ -1,6 +1,7 @@
-#include "Framework.h"
+#include "GamePCH.h"
 #include "Game.h"
 #include "Player/Player.h"
+#include "Player/Shapes.h"
 
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
@@ -13,9 +14,9 @@ Game::~Game()
         delete m_pShader;
     }
 
-    for (int i = 0; i < m_pGameObjects.size(); i++)
+    for (int i = 0; i < m_pObjects.size(); i++)
     {
-        delete m_pGameObjects.at(i);
+        delete m_pObjects.at(i);
     }
 
     if(m_pMeshAnimal != nullptr)
@@ -28,10 +29,12 @@ Game::~Game()
         delete m_pMeshHuman;
     }
 
-    if(m_pPlayer != nullptr)
+  /*  if(m_pPlayer != nullptr)
     {
         delete m_pPlayer;
-    }
+    }*/
+
+    delete m_pEventManager;
 }
 
 void Game::Init()
@@ -45,76 +48,66 @@ void Game::Init()
 void Game::CreateMesh()
 {
     // Define our triangle as 3 positions.
-    float createHuman[] =
-    {
-        0.6f, 0.5f,   //HeadTop - top
-        0.5f, 0.4f,   //HeadTop - right
-        0.7f, 0.4f,   //HeadTop - left
-        0.6f, 0.3f,   //HeadBottom - bottom
-        0.5f, 0.4f,   //HeadBottom - right
-        0.7f, 0.4f,   //HeadBottom - left
-        0.6f, 0.3f,   //Body - top
-        0.8f, -0.2f,  //Body - left
-        0.4f, -0.2f,  //Body - right
-        0.8f, -0.2f,  //Left leg - left
-        0.64f, -0.2f, //Left leg - right
-        0.7f, -0.4f,  //Left leg - bottom
-        0.55f, -0.2f, //Right leg - right
-        0.4f, -0.2f,  //Right leg - left
-        0.5f, -0.4f,  //Right leg - bottom
 
-    };
-    m_pMeshHuman = new fw::Mesh(15, GL_TRIANGLES, createHuman);
-
-    float createAnimal[] =
-    {
-        0.2f, 0.6f, //Head - Left
-        0.3f, 0.6f,  //Head - Right
-        0.3f, 0.6f, //Neck - Top
-        0.4f, 0.5f, //Neck - Bottom
-        0.4f, 0.5f, //Body - Left
-        0.6f, 0.5f, //Body Right
-        0.6f, 0.5f, //Back Leg - Back
-        0.7f, 0.3f, //Back Leg - Front
-        0.4f, 0.5f, //Front Leg - Back
-        0.4f, 0.3f, //Front Leg - Front
-
-    };
-    m_pMeshAnimal = new fw::Mesh(10, GL_LINES, createAnimal);
+    m_pMeshHuman = new fw::Mesh(meshNumVerts_Human, meshPrimTime_Human, createHuman);
+    m_pMeshAnimal = new fw::Mesh(meshNumVerts_Animal, meshPrimType_Animal, createAnimal);
 
     m_pImGuiManager = new fw::ImGuiManager(m_pFrameWork);
-
     m_pImGuiManager->Init();
 
-    fw::GameObject* m_pAnimal = new fw::GameObject(5, 5, m_pMeshAnimal, m_pShader, this);
+    m_pEventManager = new fw::EventManager();
 
-    m_pPlayer = new Player(4, 5, m_pMeshHuman, m_pShader, this);
+    // Create some GameObjects.
+    m_pObjects.push_back(new Player("Player", vec2(6, 5), m_pMeshHuman, m_pShader, this));
+    m_pObjects.push_back(new fw::GameObject("Enemy 1", vec2(0, 0), m_pMeshAnimal, m_pShader, this));
+    m_pObjects.push_back(new fw::GameObject("Enemy 2", vec2(10, 10), m_pMeshAnimal, m_pShader, this));
+    m_pObjects.push_back(new fw::GameObject("Enemy 3", vec2(5, 5), m_pMeshAnimal, m_pShader, this));
+    m_pObjects.push_back(new fw::GameObject("Enemy 4", vec2(1, 1), m_pMeshAnimal, m_pShader, this));
+    m_pObjects.push_back(new fw::GameObject("Enemy 5", vec2(1, 9), m_pMeshAnimal, m_pShader, this));
+}
 
-     m_pGameObjects.push_back(m_pAnimal);
+void Game::OnEvent(fw::Event* pEvent)
+{
 }
 
 void Game::Update(float deltaTime)
 {
+    // Process our events.
+    m_pEventManager->DispatchAllEvents(this);
+
     m_pImGuiManager->StartFrame(deltaTime);
     ImGui::ShowDemoWindow();
 
-    m_pPlayer->Update(deltaTime);
+    for (auto it = m_pObjects.begin(); it != m_pObjects.end(); it++)
+    {
+        fw::GameObject* pObject = *it;
+
+        pObject->Update(deltaTime);
+
+        //ImGui::PushID( pObject );
+        //ImGui::Text( "Name: %s", pObject->GetName().c_str() );
+        //ImGui::SameLine();
+        //if( ImGui::Button( "Delete" ) )
+        //{
+        //    m_pEventManager->AddEvent( new RemoveFromGameEvent( pObject ) );
+        //}
+        //ImGui::PopID();
+    }
 }
 
 void Game::Draw()
 {
-    glClearColor(0, 0.5, 0, 1);
+    glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
-    glLineWidth(4);
 
     glPointSize(10);
 
-    for (int i = 0; i < m_pGameObjects.size(); i++)
+    for (auto it = m_pObjects.begin(); it != m_pObjects.end(); it++)
     {
-        m_pGameObjects.at(i)->Draw();
-    }
+        fw::GameObject* pObject = *it;
 
-    m_pPlayer->Draw();
+        pObject->Draw();
+    }
 
     m_pImGuiManager->EndFrame();
 

@@ -1,18 +1,12 @@
 #pragma once
 
-
 class Player : public fw::GameObject
 {
 public:
-    Player(float x, float y, fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::GameCore* pGameCore);
-    ~Player();
+    Player(std::string name, vec2 pos, fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::GameCore* pGameCore);
+    virtual ~Player();
 
-    void Update(float deltaTime);
+    virtual void Update(float deltaTime) override;
 
 protected:
-
-    vec2 m_GameObjectVector = vec2(m_posX, m_posY);
-
-private:
-    const int SPEED = 4;
 };

@@ -1,3 +1,4 @@
+#include "FrameworkPCH.h"
 #include "Framework.h"
 #include "Utility/ShaderProgram.h"
 #include "Utility/Helpers.h"
@@ -6,19 +7,8 @@
 
 namespace fw {
 
-Mesh::Mesh(int type)
-{
-    if(type == 0)
-    {
-        MakeAnimal();
-    }
-    else
-    {
-        MakeHuman();
-    }
-}
 
-Mesh::Mesh(int numVertices, int primitiveType, float* pVertices)
+Mesh::Mesh(int numVertices, int primitiveType, const float* pVertices)
 {
     CreateShape(numVertices, primitiveType, pVertices);
 }
@@ -46,10 +36,10 @@ void Mesh::SetUniform2F(ShaderProgram* pShader, char* name, float value1, float 
 void Mesh::SetUniform2F(ShaderProgram* pShader, char* name, vec2 values)
 {
     int loc = glGetUniformLocation(pShader->GetProgram(), name);
-    glUniform2f(loc, values.posX, values.posY);
+    glUniform2f(loc, values.x, values.y);
 }
 
-void Mesh::Draw(float x, float y, ShaderProgram* pShader)
+void Mesh::Draw(vec2 pos, ShaderProgram* pShader)
 {
     glUseProgram(pShader->GetProgram());
 
@@ -65,7 +55,7 @@ void Mesh::Draw(float x, float y, ShaderProgram* pShader)
 
    {
         SetUniform1F(pShader, "u_Time", (float)GetSystemTimeSinceGameStart());
-        SetUniform2F(pShader, "u_Pos", x, y);
+        SetUniform2F(pShader, "u_Pos", pos);
     }
 
     
@@ -74,7 +64,7 @@ void Mesh::Draw(float x, float y, ShaderProgram* pShader)
     glDrawArrays( m_PrimitiveType, 0, m_NumVertices );
 }
 
-void Mesh::CreateShape(int numVertices, int primitiveType, float* pVertices)
+void Mesh::CreateShape(int numVertices, int primitiveType, const float* pVertices)
 {
     // Generate a buffer for our vertex attributes.
     glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
@@ -90,72 +80,5 @@ void Mesh::CreateShape(int numVertices, int primitiveType, float* pVertices)
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, pVertices, GL_STATIC_DRAW);
 }
 
-void Mesh::MakeAnimal()
-{
-    // Generate a buffer for our vertex attributes.
-    glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
 
-    // Set this VBO to be the currently active one.
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-
-    // Define our triangle as 3 positions.
-    float attribs[] =
-    {
-        0.2f, 0.6f, //Head - Left
-        0.3f, 0.6f,  //Head - Right
-        0.3f, 0.6f, //Neck - Top
-        0.4f, 0.5f, //Neck - Bottom
-        0.4f, 0.5f, //Body - Left
-        0.6f, 0.5f, //Body Right
-        0.6f, 0.5f, //Back Leg - Back
-        0.7f, 0.3f, //Back Leg - Front
-        0.4f, 0.5f, //Front Leg - Back
-        0.4f, 0.3f, //Front Leg - Front
-
-    };
-
-    m_NumVertices = 10;
-    m_PrimitiveType = GL_LINES;
-
-    // Copy our attribute data into the VBO.
-    int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, attribs, GL_STATIC_DRAW);
-}
-
-void Mesh::MakeHuman()
-{
-    // Generate a buffer for our vertex attributes.
-    glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
-
-    // Set this VBO to be the currently active one.
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-
-    // Define our triangle as 3 positions.
-    float attribs[] =
-    {
-        -0.6f, 0.5f,   //HeadTop - top
-        -0.5f, 0.4f,   //HeadTop - right
-        -0.7f, 0.4f,   //HeadTop - left
-        -0.6f, 0.3f,   //HeadBottom - bottom
-        -0.5f, 0.4f,   //HeadBottom - right
-        -0.7f, 0.4f,   //HeadBottom - left
-        -0.6f, 0.3f,   //Body - top
-        -0.8f, -0.2f,  //Body - left
-        -0.4f, -0.2f,  //Body - right
-        -0.8f, -0.2f,  //Left leg - left
-        -0.64f, -0.2f, //Left leg - right
-        -0.7f, -0.4f,  //Left leg - bottom
-        -0.55f, -0.2f, //Right leg - right
-        -0.4f, -0.2f,  //Right leg - left
-        -0.5f, -0.4f,  //Right leg - bottom
-
-    };
-
-    m_NumVertices = 15;
-    m_PrimitiveType = GL_TRIANGLES;
-
-    // Copy our attribute data into the VBO.
-    int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, attribs, GL_STATIC_DRAW);
-}
 } // namespace fw
