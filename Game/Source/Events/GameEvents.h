@@ -16,7 +16,7 @@ public:
         return "RemoveFromGameEvent";
     }
 
-    ~RemoveFromGameEvents() {}
+    virtual ~RemoveFromGameEvents() {}
 
     fw::GameObject* GetGameObject() { return m_pGameObject; }
 

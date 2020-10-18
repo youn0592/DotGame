@@ -9,7 +9,7 @@ class Mesh
 {
 public:
 
-    Mesh(int numVertices, int primitiveType, const float* pVertices);
+    Mesh();
 
     virtual ~Mesh();
 
@@ -21,12 +21,16 @@ public:
     void Draw(vec2 pos, ShaderProgram* pShader);
 
     void CreateShape(int numVertices, int primitiveType, const float* pVertices);
+    void CreateCircle(float radius, int numVertices, bool isFilled);
 
 protected:
     GLuint m_VBO = 0;
 
     int m_NumVertices = 0;
     int m_PrimitiveType = GL_POINTS;
+
+    float m_Radius = 0;
+    float m_Angle = 0;
 };
 
 } // namespace fw

@@ -8,6 +8,8 @@
 // 3. This notice may not be removed or altered from any source distribution.
 
 #include "FrameworkPCH.h"
+//#include "EventSystem/Event.h"
+//#include "EventSystem/EventManager.h"
 
 #include "FWCore.h"
 #include "GL/GLExtensions.h"
@@ -447,6 +449,15 @@ LRESULT CALLBACK FWCore::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
                     PostQuitMessage( 0 );
 
                 pFWCore->m_KeyStates[wParam] = true;
+
+                //Send an input to the event
+                //InputEvent* pEvent = new InputEvent{
+                //    InputEvent::DeviceType::Keyboard,
+                //    InputEvent::DeviceState::Pressed,
+                //    wParam
+                //};
+
+                //pFWCore->m_pGame->GetEventManager->AddEvent(pEvent);
             }
         }
         return 0;

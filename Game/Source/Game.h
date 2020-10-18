@@ -1,6 +1,7 @@
 #pragma once
 
 class Player;
+class PlayerController;
 
 class Game : public fw::GameCore
 {
@@ -34,4 +35,10 @@ protected:
     std::vector<fw::GameObject*> m_pObjects;
 
     fw::EventManager* m_pEventManager = nullptr;
+
+    PlayerController* m_pPlayerController = nullptr;
+
+    //Settings
+
+    bool m_VSyncEnabled = true;
 };
