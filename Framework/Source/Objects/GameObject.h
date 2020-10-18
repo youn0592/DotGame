@@ -19,6 +19,8 @@ namespace fw {
 
         void GetFrameWork();
 
+        vec2 GetPosition();
+
         std::string GetName();
 
     protected:

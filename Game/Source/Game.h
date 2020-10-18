@@ -20,22 +20,21 @@ public:
 
 
 protected:
-    float m_posX = 0;
-    float m_posY = 0;
 
+    //Circle Members
+    int m_verts = 15;
+    float m_Rads = 0.3f;
+    fw::vec2 m_Mid = vec2(5, 5);
+    bool m_isFilled = true;
+
+    //Shaders / ImGui
     fw::ShaderProgram* m_pShader = nullptr;
     fw::ImGuiManager* m_pImGuiManager = nullptr;
 
-
-    //Player* m_pPlayer = nullptr;
-
-    fw::Mesh* m_pMeshHuman = nullptr;
-    fw::Mesh* m_pMeshAnimal = nullptr;
-
+    //Meshes
+    fw::Mesh* m_Arena = nullptr;
+    fw::Mesh* m_Character = nullptr;
     std::vector<fw::GameObject*> m_pObjects;
-
-    fw::EventManager* m_pEventManager = nullptr;
-
     PlayerController* m_pPlayerController = nullptr;
 
     //Settings

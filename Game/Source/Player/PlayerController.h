@@ -1,23 +1,21 @@
 #pragma once
 
-class PlayerController {
-
+class PlayerController
+{
 public:
     PlayerController();
     virtual ~PlayerController();
 
-    void Update(fw::GameCore* pGameCore);
+    void OnEvent(fw::Event* pEvent);
 
-    bool IsUpHeld();
-    bool IsDownHeld();
-    bool IsRightHeld();
-    bool IsLeftHeld();
+    bool IsUpHeld() { return m_Up; }
+    bool IsDownHeld() { return m_Down; }
+    bool IsLeftHeld() { return m_Left; }
+    bool IsRightHeld() { return m_Right; }
 
 protected:
-
     bool m_Up = false;
     bool m_Down = false;
-    bool m_Right = false;
     bool m_Left = false;
-
+    bool m_Right = false;
 };

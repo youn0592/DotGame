@@ -4,9 +4,9 @@
 #include "Player/PlayerController.h"
 
 Player::Player(std::string name, vec2 pos, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::GameCore* pGameCore)
-    : fw::GameObject(name, pos, pMesh, pShader, pGameCore)
+    : fw::GameObject(name, pos, pMesh, pShader, pGameCore),
+     m_pPlayerController(pPlayerController)
 {
-    m_pPlayerController = pPlayerController;
 }
 
 Player::~Player()

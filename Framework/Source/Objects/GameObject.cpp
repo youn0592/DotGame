@@ -29,6 +29,10 @@ namespace fw {
     {
         m_pGameCore->GetFramework();
     }
+    vec2 GameObject::GetPosition()
+    {
+        return m_Position;
+    }
     std::string GameObject::GetName()
     {
         return m_Name;

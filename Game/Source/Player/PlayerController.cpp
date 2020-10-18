@@ -11,48 +11,29 @@ PlayerController::~PlayerController()
 
 }
 
-void PlayerController::Update(fw::GameCore* pGameCore)
+void PlayerController::OnEvent(fw::Event* pEvent)
 {
-
-    m_Up = false;
-    m_Down = false;
-    m_Right = false;
-    m_Left = false;
-
-    if (pGameCore->GetFramework()->IsKeyDown('W'))
+    if (pEvent->GetType() == fw::InputEvent::GetStaticEventType())
     {
-        m_Up = true;
-    }
-    if (pGameCore->GetFramework()->IsKeyDown('S'))
-    {
-        m_Down = true;
-    }
-    if (pGameCore->GetFramework()->IsKeyDown('A'))
-    {
-        m_Left = true;
-    }
-    if (pGameCore->GetFramework()->IsKeyDown('D'))
-    {
-        m_Right = true;
-    }
-}
+        fw::InputEvent* pInputEvent = static_cast<fw::InputEvent*>(pEvent);
 
-bool PlayerController::IsUpHeld()
-{
-    return m_Up;
-}
+        if (pInputEvent->GetDeviceType() == fw::InputEvent::DeviceType::Keyboard)
+        {
+            if (pInputEvent->GetDeviceState() == fw::InputEvent::DeviceState::Pressed)
+            {
+                if (pInputEvent->GetKeyCode() == 'W') { m_Up = true; }
+                if (pInputEvent->GetKeyCode() == 'S') { m_Down = true; }
+                if (pInputEvent->GetKeyCode() == 'A') { m_Left = true; }
+                if (pInputEvent->GetKeyCode() == 'D') { m_Right = true; }
+            }
 
-bool PlayerController::IsDownHeld()
-{
-    return m_Down;
-}
-
-bool PlayerController::IsRightHeld()
-{
-    return m_Right;
-}
-
-bool PlayerController::IsLeftHeld()
-{
-    return m_Left;
+            if (pInputEvent->GetDeviceState() == fw::InputEvent::DeviceState::Released)
+            {
+                if (pInputEvent->GetKeyCode() == 'W') { m_Up = false; }
+                if (pInputEvent->GetKeyCode() == 'S') { m_Down = false; }
+                if (pInputEvent->GetKeyCode() == 'A') { m_Left = false; }
+                if (pInputEvent->GetKeyCode() == 'D') { m_Right = false; }
+            }
+        }
+    }
 }

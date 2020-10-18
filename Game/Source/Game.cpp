@@ -3,6 +3,7 @@
 #include "Player/Player.h"
 #include "Player/Shapes.h"
 #include "Player/PlayerController.h"
+#include "Events/GameEvents.h"
 
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
@@ -19,14 +20,12 @@ Game::~Game()
         delete m_pObjects.at(i);
     }
 
-    if(m_pMeshAnimal != nullptr)
-    {
-        delete m_pMeshAnimal;
+    if (m_Arena != nullptr) {
+        delete m_Arena;
     }
 
-    if (m_pMeshHuman != nullptr)
-    {
-        delete m_pMeshHuman;
+    if (m_Character != nullptr) {
+        delete m_Character;
     }
 
   /*  if(m_pPlayer != nullptr)
@@ -43,8 +42,12 @@ void Game::Init()
 {
     wglSwapInterval(m_VSyncEnabled ? 1 : 0);
 
+    m_pImGuiManager = new fw::ImGuiManager(m_pFrameWork);
+    m_pImGuiManager->Init();
+
     m_pShader = new fw::ShaderProgram("Data/basic.vert","Data/basic.frag");
 
+    m_pEventManager = new fw::EventManager();
     m_pPlayerController = new PlayerController();
 
     CreateMesh();
@@ -53,18 +56,19 @@ void Game::Init()
 
 void Game::CreateMesh()
 {
-    // Define our triangle as 3 positions.
 
 
-    fw::Mesh* Circle = new fw::Mesh();
-    Circle->CreateCircle(2.0f, 15, false);
+    m_Arena = new fw::Mesh();
+    m_Character = new fw::Mesh();
 
-    m_pObjects.push_back(new fw::GameObject("Circle", vec2(5,5), Circle, m_pShader, this));
+    m_Arena->CreateCircle(4.0f, 100, false);
+    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
 
-    m_pImGuiManager = new fw::ImGuiManager(m_pFrameWork);
-    m_pImGuiManager->Init();
+    m_pObjects.push_back(new Player("Character", m_Mid, m_pPlayerController, m_Character, m_pShader, this));
+    m_pObjects.push_back(new fw::GameObject("Circle", m_Mid, m_Arena, m_pShader, this));
 
-    m_pEventManager = new fw::EventManager();
+
+
 
     // Create some GameObjects.
     //m_pObjects.push_back(new Player("Player", vec2(6, 5), m_pPlayerController, m_pMeshHuman, m_pShader, this));
@@ -77,17 +81,46 @@ void Game::CreateMesh()
 
 void Game::OnEvent(fw::Event* pEvent)
 {
-}
+        m_pPlayerController->OnEvent(pEvent);
+
+        if (pEvent->GetType() == RemoveFromGameEvent::GetStaticEventType())
+        {
+            RemoveFromGameEvent* pRemoveFromGameEvent = static_cast<RemoveFromGameEvent*>(pEvent);
+            fw::GameObject* pObject = pRemoveFromGameEvent->GetGameObject();
+
+            auto it = std::find(m_pObjects.begin(), m_pObjects.end(), pObject);
+            m_pObjects.erase(it);
+
+            delete pObject;
+        }
+    }
 
 void Game::Update(float deltaTime)
 {
     // Process our events.
     m_pEventManager->DispatchAllEvents(this);
 
-    m_pPlayerController->Update(this);
 
     m_pImGuiManager->StartFrame(deltaTime);
     ImGui::ShowDemoWindow();
+
+    //Circle Debug List
+    {
+        if (ImGui::SliderInt("Player Sides", &m_verts, 3, 100))
+        {
+            m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+        }
+
+        if (ImGui::SliderFloat("Player Radius", &m_Rads, 0.1f, 3.0f))
+        {
+            m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+        }
+
+        if (ImGui::Checkbox("Player Is Filled", &m_isFilled)) {
+
+            m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+        }
+    }
 
     for (auto it = m_pObjects.begin(); it != m_pObjects.end(); it++)
     {
@@ -97,10 +130,11 @@ void Game::Update(float deltaTime)
 
         //ImGui::PushID( pObject );
         //ImGui::Text( "Name: %s", pObject->GetName().c_str() );
+        //
         //ImGui::SameLine();
         //if( ImGui::Button( "Delete" ) )
         //{
-        //    m_pEventManager->AddEvent( new RemoveFromGameEvent( pObject ) );
+        //    m_pEventManager->AddEvent( new RemoveFromGameEvent(pObject) );
         //}
         //ImGui::PopID();
     }

@@ -18,6 +18,9 @@
 
 #include "GameCore.h"
 #include "Utility/Helpers.h"
+#include "EventSystem/Event.h"
+#include "EventSystem/EventManager.h"
+
 
 namespace fw {
 
@@ -40,6 +43,7 @@ FWCore::FWCore()
     m_hDeviceContext = nullptr;
     m_hInstance = nullptr;
     m_pMyGLContext = nullptr;
+    m_pGame = nullptr;
 
     for( int i=0; i<256; i++ )
     {
@@ -86,6 +90,8 @@ int FWCore::Run(GameCore* pGame)
     // Main loop.
     MSG message;
     bool done = false;
+
+    m_pGame = pGame;
 
     double previousTime = GetSystemTimeSinceGameStart();
 
@@ -450,14 +456,14 @@ LRESULT CALLBACK FWCore::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
                 pFWCore->m_KeyStates[wParam] = true;
 
-                //Send an input to the event
-                //InputEvent* pEvent = new InputEvent{
-                //    InputEvent::DeviceType::Keyboard,
-                //    InputEvent::DeviceState::Pressed,
-                //    wParam
-                //};
+              /*  Send an input to the event*/
+                InputEvent* pEvent = new InputEvent{
+                    InputEvent::DeviceType::Keyboard,
+                    InputEvent::DeviceState::Pressed,
+                    (unsigned int)wParam
+                };
 
-                //pFWCore->m_pGame->GetEventManager->AddEvent(pEvent);
+                pFWCore->m_pGame->GetEventManager()->AddEvent(pEvent);
             }
         }
         return 0;
@@ -465,6 +471,14 @@ LRESULT CALLBACK FWCore::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     case WM_KEYUP:
         {
             pFWCore->m_KeyStates[wParam] = false;
+
+            // Send a input event to the event manager.
+            InputEvent* pEvent = new InputEvent(
+                InputEvent::DeviceType::Keyboard,
+                InputEvent::DeviceState::Released,
+                (unsigned int)wParam);
+
+            pFWCore->m_pGame->GetEventManager()->AddEvent(pEvent);
         }
         return 0;
 
