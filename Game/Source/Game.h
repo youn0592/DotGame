@@ -27,6 +27,12 @@ protected:
     fw::vec2 m_Mid = vec2(5, 5);
     bool m_isFilled = true;
 
+    //Arena Members
+    float m_Timer = 0.0f;
+    float m_ArenaRad = 4.0f;;
+
+    vec2 m_playerPosition;
+
     //Shaders / ImGui
     fw::ShaderProgram* m_pShader = nullptr;
     fw::ImGuiManager* m_pImGuiManager = nullptr;
@@ -34,6 +40,9 @@ protected:
     //Meshes
     fw::Mesh* m_Arena = nullptr;
     fw::Mesh* m_Character = nullptr;
+
+    fw::Mesh* m_Enemy = nullptr;
+
     std::vector<fw::GameObject*> m_pObjects;
     PlayerController* m_pPlayerController = nullptr;
 

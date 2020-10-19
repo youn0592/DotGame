@@ -11,7 +11,7 @@ namespace fw {
     class GameObject
     {
     public:
-        GameObject(std::string name, vec2 pos, Mesh* pMesh, ShaderProgram* pShader, GameCore* pGameCore);
+        GameObject(std::string name, vec2 pos, Mesh* pMesh, ShaderProgram* pShader, GameCore* pGameCore, vec4 color);
         virtual ~GameObject();
 
         virtual void Update(float deltaTime);
@@ -19,6 +19,7 @@ namespace fw {
 
         void GetFrameWork();
 
+        void SetPosition(vec2 pos);
         vec2 GetPosition();
 
         std::string GetName();
@@ -30,6 +31,8 @@ namespace fw {
         Mesh* m_pMesh = nullptr;
         ShaderProgram* m_pShader = nullptr;
         GameCore* m_pGameCore = nullptr;
+
+        vec4 m_Color = vec4(1,1,1,1);
 
         std::string m_Name;
     };

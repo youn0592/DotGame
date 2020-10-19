@@ -39,7 +39,13 @@ void Mesh::SetUniform2F(ShaderProgram* pShader, char* name, vec2 values)
     glUniform2f(loc, values.x, values.y);
 }
 
-void Mesh::Draw(vec2 pos, ShaderProgram* pShader)
+void Mesh::SetUniform4F(ShaderProgram* pShader, char* name, vec4 values)
+{
+    int loc = glGetUniformLocation(pShader->GetProgram(), name);
+    glUniform4f(loc, values.x, values.y, values.z, values.w);
+}
+
+void Mesh::Draw(vec2 pos, ShaderProgram* pShader, vec4 color)
 {
     glUseProgram(pShader->GetProgram());
 
@@ -56,6 +62,7 @@ void Mesh::Draw(vec2 pos, ShaderProgram* pShader)
    {
         SetUniform1F(pShader, "u_Time", (float)GetSystemTimeSinceGameStart());
         SetUniform2F(pShader, "u_Pos", pos);
+        SetUniform4F(pShader, "u_Color", color);
     }
 
    
@@ -126,6 +133,11 @@ void Mesh::CreateCircle(float radius, int numVertices, bool isFilled)
 
     int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, &attribs[0], GL_STATIC_DRAW);
+}
+
+float Mesh::GetRadius()
+{
+    return m_Radius;
 }
 
 

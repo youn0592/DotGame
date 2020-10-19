@@ -1,10 +1,10 @@
 #include "GamePCH.h"
 
-#include "Player/Player.h"
-#include "Player/PlayerController.h"
+#include "Objects/Player.h"
+#include "Objects/PlayerController.h"
 
-Player::Player(std::string name, vec2 pos, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::GameCore* pGameCore)
-    : fw::GameObject(name, pos, pMesh, pShader, pGameCore),
+Player::Player(std::string name, vec2 pos, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::GameCore* pGameCore, fw::vec4 color)
+    : fw::GameObject(name, pos, pMesh, pShader, pGameCore, color),
      m_pPlayerController(pPlayerController)
 {
 }

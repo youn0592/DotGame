@@ -16,12 +16,15 @@ public:
     void SetUniform1F(ShaderProgram* pShader, char* name, float value);
     void SetUniform2F(ShaderProgram* pShader, char* name, float value1, float value2);
     void SetUniform2F(ShaderProgram* pShader, char* name, vec2 values);
+    void SetUniform4F(ShaderProgram* pShader, char* name, vec4 values);
 
 
-    void Draw(vec2 pos, ShaderProgram* pShader);
+    void Draw(vec2 pos, ShaderProgram* pShader, vec4 color);
 
     void CreateShape(int numVertices, int primitiveType, const float* pVertices);
     void CreateCircle(float radius, int numVertices, bool isFilled);
+
+    float GetRadius();
 
 protected:
     GLuint m_VBO = 0;

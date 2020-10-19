@@ -1,4 +1,3 @@
-
 #pragma once
 
 class RemoveFromGameEvent : public fw::Event
@@ -17,4 +16,20 @@ public:
 
 protected:
     fw::GameObject* m_pObject;
+};
+
+class AddFromGameEvent : public fw::Event
+{
+public:
+    AddFromGameEvent()
+    {
+    }
+    virtual ~AddFromGameEvent() {}
+
+    static const char* GetStaticEventType() { return "AddFromGameEvent"; }
+    virtual const char* GetType() override { return GetStaticEventType(); }
+
+
+protected:
+
 };
