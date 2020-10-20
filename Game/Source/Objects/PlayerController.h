@@ -12,10 +12,12 @@ public:
     bool IsDownHeld() { return m_Down; }
     bool IsLeftHeld() { return m_Left; }
     bool IsRightHeld() { return m_Right; }
+    bool IsBoostHeld() { return m_Boost;  }
 
 protected:
     bool m_Up = false;
     bool m_Down = false;
     bool m_Left = false;
     bool m_Right = false;
+    bool m_Boost = false;
 };

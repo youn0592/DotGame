@@ -15,7 +15,7 @@ Player::~Player()
 
 void Player::Update(float deltaTime)
 {
-    float speed = 2.0f;
+    float speed = 4.0f;
 
     vec2 dir;
 
@@ -35,6 +35,11 @@ void Player::Update(float deltaTime)
     {
         dir.y = -1;
     }
+    if (m_pPlayerController->IsBoostHeld()) 
+    {
+        speed *= 2;
+    }
+
 
     m_Position += dir * speed * deltaTime;
 }

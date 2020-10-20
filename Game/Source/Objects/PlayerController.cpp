@@ -25,6 +25,7 @@ void PlayerController::OnEvent(fw::Event* pEvent)
                 if (pInputEvent->GetKeyCode() == 'S') { m_Down = true; }
                 if (pInputEvent->GetKeyCode() == 'A') { m_Left = true; }
                 if (pInputEvent->GetKeyCode() == 'D') { m_Right = true; }
+                if (pInputEvent->GetKeyCode() == VK_SHIFT) { m_Boost = true; }
             }
 
             if (pInputEvent->GetDeviceState() == fw::InputEvent::DeviceState::Released)
@@ -33,6 +34,7 @@ void PlayerController::OnEvent(fw::Event* pEvent)
                 if (pInputEvent->GetKeyCode() == 'S') { m_Down = false; }
                 if (pInputEvent->GetKeyCode() == 'A') { m_Left = false; }
                 if (pInputEvent->GetKeyCode() == 'D') { m_Right = false; }
+                if (pInputEvent->GetKeyCode() == VK_SHIFT) { m_Boost = false; }
             }
         }
     }
