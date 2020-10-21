@@ -70,17 +70,18 @@ void Game::CreateMesh()
     m_Enemy = new fw::Mesh();
     m_Enemy->CreateCircle(0.3, 4, true);
    
-
-    m_pObjects.push_back(new Player("Character", m_Mid, m_pPlayerController, m_Character, m_pShader, this, fw::vec4::Blue()));
+    m_pPlayer = new Player("Character", m_Mid, m_pPlayerController, m_Character, m_pShader, this, fw::vec4::Blue());
+    m_pObjects.push_back(m_pPlayer);
     m_pObjects.push_back(new fw::GameObject("Circle", m_Mid, m_Arena, m_pShader, this, fw::vec4::Red()));
+}
 
-    // Create some GameObjects.
-    //m_pObjects.push_back(new Player("Player", vec2(6, 5), m_pPlayerController, m_pMeshHuman, m_pShader, this));
-    //m_pObjects.push_back(new fw::GameObject("Enemy 1", vec2(0, 0), m_pMeshAnimal, m_pShader, this));
-    //m_pObjects.push_back(new fw::GameObject("Enemy 2", vec2(10, 10), m_pMeshAnimal, m_pShader, this));
-    //m_pObjects.push_back(new fw::GameObject("Enemy 3", vec2(5, 5), m_pMeshAnimal, m_pShader, this));
-    //m_pObjects.push_back(new fw::GameObject("Enemy 4", vec2(1, 1), m_pMeshAnimal, m_pShader, this));
-    //m_pObjects.push_back(new fw::GameObject("Enemy 5", vec2(1, 9), m_pMeshAnimal, m_pShader, this));
+void Game::StartFrame(float deltaTime)
+{
+    m_pImGuiManager->StartFrame(deltaTime);
+
+    m_pPlayerController->StartFrame();
+
+    m_pEventManager->DispatchAllEvents(this);
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -114,18 +115,14 @@ void Game::OnEvent(fw::Event* pEvent)
 
 void Game::Update(float deltaTime)
 {
-    // Process our events.
-    m_pEventManager->DispatchAllEvents(this);
 
+    //ImGui::ShowDemoWindow();
 
-    m_pImGuiManager->StartFrame(deltaTime);
-    ImGui::ShowDemoWindow();
-
-    m_playerPosition = m_pObjects[0]->GetPosition();
+    m_playerPosition = m_pPlayer->GetPosition();
 
     //Run Timer
     m_Timer += deltaTime;
-    if (m_Timer >= 0.5f) 
+    if (m_Timer >= m_TimerSpawn) 
     {
         m_pEventManager->AddEvent(new AddFromGameEvent());
 
@@ -148,14 +145,18 @@ void Game::Update(float deltaTime)
 
             m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
         }
+        if (ImGui::SliderFloat("Spawn Timer", &m_TimerSpawn, 0.0f, 5.0f)) 
+        {
+
+        }
     }
 
-    if((m_pObjects[0]->GetPosition() - m_Mid).magnitude() >= m_ArenaRad - m_Rads )
+    if((m_pPlayer->GetPosition() - m_Mid).magnitude() >= m_ArenaRad - m_Rads )
     {
-        vec2 collide = (m_pObjects[0]->GetPosition() - m_Mid).normalize();
+        vec2 collide = (m_pPlayer->GetPosition() - m_Mid).normalize();
         collide *=  m_ArenaRad - m_Rads;
 
-        m_pObjects[0]->SetPosition(collide + m_Mid);
+        m_pPlayer->SetPosition(collide + m_Mid);
     }
 
     for (auto it = m_pObjects.begin(); it != m_pObjects.end(); it++)
@@ -172,24 +173,6 @@ void Game::Update(float deltaTime)
 
             }
         }
-
-        ////Delete Objects when leaving Arena
-        //    if ((pObject->GetPosition() - m_Mid).magnitude() >= m_ArenaRad) {
-
-        //        m_pEventManager->AddEvent(new RemoveFromGameEvent(pObject));
-
-        //    }
-        
-
-        //ImGui::PushID( pObject );
-        //ImGui::Text( "Name: %s", pObject->GetName().c_str() );
-        //
-        //ImGui::SameLine();
-        //if( ImGui::Button( "Delete" ) )
-        //{
-        //    m_pEventManager->AddEvent( new RemoveFromGameEvent(pObject) );
-        //}
-        //ImGui::PopID();
     }
 
     //ImGUI debug stuff

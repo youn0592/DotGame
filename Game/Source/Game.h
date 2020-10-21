@@ -13,11 +13,13 @@ public:
 
     void CreateMesh();
 
+    virtual void StartFrame(float deltaTime) override;
+
     virtual void OnEvent(fw::Event* pEvent) override;
     virtual void Update(float deltaTime) override;
     virtual void Draw() override;
 
-
+    Player* GetPlayer() { return m_pPlayer; }
 
 protected:
 
@@ -29,6 +31,7 @@ protected:
 
     //Arena Members
     float m_Timer = 0.0f;
+    float m_TimerSpawn = 0.5f;
     float m_ArenaRad = 4.0f;;
 
     vec2 m_playerPosition;
@@ -43,6 +46,7 @@ protected:
 
     fw::Mesh* m_Enemy = nullptr;
 
+    Player* m_pPlayer = nullptr;
     std::vector<fw::GameObject*> m_pObjects;
     PlayerController* m_pPlayerController = nullptr;
 

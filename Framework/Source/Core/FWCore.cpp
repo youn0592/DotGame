@@ -115,6 +115,7 @@ int FWCore::Run(GameCore* pGame)
             double deltaTime = currentTime - previousTime;
             previousTime = currentTime;
 
+            pGame->StartFrame((float)deltaTime);
             pGame->Update((float)deltaTime);
             pGame->Draw();
 

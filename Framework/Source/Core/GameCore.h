@@ -12,6 +12,7 @@ namespace fw {
         GameCore(FWCore* pFramework);
         virtual ~GameCore();
 
+        virtual void StartFrame(float deltaTime) = 0;
         virtual void OnEvent(fw::Event* pEvent) = 0;
         virtual void Update(float deltaTime) = 0;
         virtual void Draw() = 0;
