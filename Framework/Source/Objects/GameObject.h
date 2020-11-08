@@ -24,6 +24,10 @@ namespace fw {
 
         std::string GetName();
 
+        float GetRadius();
+
+        void SetColor(vec4 color);
+
     protected:
 
         vec2 m_Position;

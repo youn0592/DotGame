@@ -8,10 +8,14 @@ public:
 
     virtual void Update(float deltaTime) override;
 
+    std::string GetName();
+
 protected: 
      
     vec2 m_PlayerPos;
 
     vec2 m_Dir;
     float m_Speed;
+
+    std::string m_ObjectName;
 };

@@ -43,4 +43,12 @@ namespace fw {
     {
         return m_Name;
     }
+    float GameObject::GetRadius()
+    {
+        return m_pMesh->GetRadius();
+    }
+    void GameObject::SetColor(vec4 color)
+    {
+        m_Color = color;
+    }
 }

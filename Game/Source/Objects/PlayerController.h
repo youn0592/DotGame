@@ -10,7 +10,8 @@ public:
         Down = 2,
         Left = 4,
         Right = 8,
-        Boost = 16
+        Boost = 16,
+        Reset = 32
     };
     
 

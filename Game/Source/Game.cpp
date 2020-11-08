@@ -10,6 +10,7 @@
 
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
+
 }
 
 Game::~Game()
@@ -36,13 +37,23 @@ Game::~Game()
         delete m_pPlayer;
     }*/
 
+    if (m_Enemy != nullptr) {
+        delete m_Enemy;
+    }
+
     delete m_pEventManager;
 
     delete m_pPlayerController;
+
+    delete m_pImGuiManager;
 }
 
 void Game::Init()
 {
+    //OpenGL Settings
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     wglSwapInterval(m_VSyncEnabled ? 1 : 0);
 
     m_pImGuiManager = new fw::ImGuiManager(m_pFrameWork);
@@ -111,6 +122,39 @@ void Game::OnEvent(fw::Event* pEvent)
 
             m_pObjects.push_back(new Enemy("Enemy", enemyPos, m_playerPosition, m_Enemy, m_pShader, this, fw::vec4::Green()));
         }
+
+        if (pEvent->GetType() == GameOverFromEvent::GetStaticEventType())
+        {
+            m_HasLost = true;
+        }
+        if(pEvent->GetType() == GameWinFromEvent::GetStaticEventType())
+        {
+            m_HasWon = true;
+        }
+        if (pEvent->GetType() == ResetFromEvent::GetStaticEventType())
+        {
+            for (auto it = m_pObjects.begin() + 1; it != m_pObjects.end(); it++) {
+                fw::GameObject* pObject = *it;
+                if (pObject->GetName() != "Circle") {
+                    m_pEventManager->AddEvent(new RemoveFromGameEvent(pObject));
+                }
+            }
+
+            m_Level = 1;
+            m_ArenaRad = 5.0f;
+            m_Arena->CreateCircle(m_ArenaRad, 100, false);
+
+
+            m_pPlayer->SetPosition(m_Mid);
+
+            m_LevelTimer = 0;
+            m_HasWon = false;
+            m_HasLost = false;
+        }
+        if (pEvent->GetType() == LevelWinFromEvent::GetStaticEventType())
+        {
+            m_Transition = true;
+        }
     }
 
 void Game::Update(float deltaTime)
@@ -118,39 +162,90 @@ void Game::Update(float deltaTime)
 
     //ImGui::ShowDemoWindow();
 
+    if (m_pPlayerController->WasNewlyPressed(PlayerController::Mask::Reset)) {
+        m_pEventManager->AddEvent(new ResetFromEvent());
+    }
+
     m_playerPosition = m_pPlayer->GetPosition();
 
     //Run Timer
-    m_Timer += deltaTime;
-    if (m_Timer >= m_TimerSpawn) 
-    {
-        m_pEventManager->AddEvent(new AddFromGameEvent());
+    if (m_HasLost == false && m_HasWon == false) {
+        if (m_Transition == false) {
+            m_Timer += deltaTime;
+            if (m_Timer >= m_TimerSpawn)
+            {
+                m_pEventManager->AddEvent(new AddFromGameEvent());
 
-        m_Timer = 0;
+                m_Timer = 0;
+            }
+        }
+
+        m_LevelTimer += deltaTime;
+        if (m_LevelTimer >= 3.0f)
+        {
+            m_Transition = true;
+        }
+
+        if (m_LevelTimer >= 5.0f)
+        {
+            m_Transition = false;
+            m_LevelTimer = 0.0f;
+            m_Level++;
+        }
+        if (m_Level == 6) {
+            m_pEventManager->AddEvent(new GameWinFromEvent());
+        }
+
+        ImGui::Begin("How To Play");
+        ImGui::Text("Survive for 10 seconds to win");
+        ImGui::Text("%f", (m_LevelTimer));
+        ImGui::Text("Level: %i", (m_Level));
+        ImGui::Text("Press 'Left Shift' to Boost");
+        ImGui::Text("Press 'R' to Reset");
+        ImGui::End();
     }
 
     //Circle Debug List
     {
-        if (ImGui::SliderInt("Player Sides", &m_verts, 3, 100))
-        {
-            m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+        if (m_HasLost == true) {
+            ImGui::Begin("You Lose!");
+            ImGui::Text("Game Over");
+            ImGui::Text("Press 'R' to reset and try again");
+            ImGui::End();
+        }
+        else if (m_HasWon == true) {
+            ImGui::Begin("You Win!");
+            ImGui::Text("You Win!");
+            ImGui::Text("Press 'R' to reset and try again");
+            ImGui::End();
+        }
+        else if (m_Transition == true) {
+            ImGui::Begin("Level Win");
+            ImGui::Text("You beat Level: %i", (m_Level));
+            ImGui::End();
         }
 
-        if (ImGui::SliderFloat("Player Radius", &m_Rads, 0.1f, 3.0f))
-        {
-            m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
-        }
+        //if (ImGui::SliderInt("Player Sides", &m_verts, 3, 100))
+        //{
+        //    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+        //}
 
-        if (ImGui::Checkbox("Player Is Filled", &m_isFilled)) {
+        //if (ImGui::SliderFloat("Player Radius", &m_Rads, 0.1f, 3.0f))
+        //{
+        //    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+        //}
 
-            m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
-        }
+        //if (ImGui::Checkbox("Player Is Filled", &m_isFilled)) {
+
+        //    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+        //}
         if (ImGui::SliderFloat("Spawn Timer", &m_TimerSpawn, 0.0f, 5.0f)) 
         {
 
         }
     }
 
+    //Circle staying in the Arena
     if((m_pPlayer->GetPosition() - m_Mid).magnitude() >= m_ArenaRad - m_Rads )
     {
         vec2 collide = (m_pPlayer->GetPosition() - m_Mid).normalize();
@@ -159,28 +254,52 @@ void Game::Update(float deltaTime)
         m_pPlayer->SetPosition(collide + m_Mid);
     }
 
-    for (auto it = m_pObjects.begin(); it != m_pObjects.end(); it++)
-    {
-        fw::GameObject* pObject = *it;
 
-        pObject->Update(deltaTime);
-
-        if (pObject->GetName() != "Character")
+    //Updating Characters and Collision
+    if (m_Transition == false) {
+        for (auto it = m_pObjects.begin(); it != m_pObjects.end(); it++)
         {
-            if ((pObject->GetPosition() - m_Mid).magnitude() >= m_ArenaRad) {
+            fw::GameObject* pObject = *it;
 
-                m_pEventManager->AddEvent(new RemoveFromGameEvent(pObject));
+            pObject->Update(deltaTime);
 
+            if (pObject->GetName() == "Enemy")
+            {
+                if ((pObject->GetPosition() - m_Mid).magnitude() >= m_ArenaRad) {
+
+                    m_pEventManager->AddEvent(new RemoveFromGameEvent(pObject));
+
+                }
+
+                //Collision
+                {
+                    float disSqrd = sqrt((pObject->GetPosition().x - m_pPlayer->GetPosition().x) * (pObject->GetPosition().x - m_pPlayer->GetPosition().x) + (pObject->GetPosition().y - m_pPlayer->GetPosition().y) * (pObject->GetPosition().y - m_pPlayer->GetPosition().y));
+                    float RadiiSqrd = (pObject->GetRadius() + m_pPlayer->GetRadius()) * (pObject->GetRadius() + m_pPlayer->GetRadius());
+                    bool IsCollide = disSqrd <= RadiiSqrd;
+
+                    if (IsCollide == true) 
+                    {
+                        m_pEventManager->AddEvent(new GameOverFromEvent());
+                    }
+                }
             }
+
+
+
         }
     }
 
-    //ImGUI debug stuff
-    {
-        if (ImGui::Checkbox("VSync", &m_VSyncEnabled)) {
-            wglSwapInterval(m_VSyncEnabled ? 1 : 0);
-        }
+    if (m_Transition == true) {
+        m_ArenaRad -= 0.005;
+        m_Arena->CreateCircle(m_ArenaRad, 100, false);
     }
+
+    ////ImGUI debug stuff
+    //{
+    //    if (ImGui::Checkbox("VSync", &m_VSyncEnabled)) {
+    //        wglSwapInterval(m_VSyncEnabled ? 1 : 0);
+    //    }
+    //}
 }
 
 void Game::Draw()
@@ -190,7 +309,11 @@ void Game::Draw()
 
     glPointSize(10);
 
-    for (auto it = m_pObjects.begin(); it != m_pObjects.end(); it++)
+    if (m_HasLost == false) {
+        m_pPlayer->Draw();
+    }
+
+    for (auto it = m_pObjects.begin() + 1; it != m_pObjects.end(); it++)
     {
         fw::GameObject* pObject = *it;
 
@@ -200,3 +323,10 @@ void Game::Draw()
     m_pImGuiManager->EndFrame();
 
 }
+
+
+
+
+
+
+

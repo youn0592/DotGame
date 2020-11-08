@@ -19,6 +19,8 @@ public:
     virtual void Update(float deltaTime) override;
     virtual void Draw() override;
 
+
+
     Player* GetPlayer() { return m_pPlayer; }
 
 protected:
@@ -30,9 +32,18 @@ protected:
     bool m_isFilled = true;
 
     //Arena Members
+    float m_ArenaRad = 5.0f;;
+
+    //Timers
     float m_Timer = 0.0f;
     float m_TimerSpawn = 0.5f;
-    float m_ArenaRad = 4.0f;;
+    float m_LevelTimer = 0;
+    
+    bool m_HasLost = false;
+    bool m_HasWon = false;
+    bool m_Transition = false;
+
+    int m_Level = 1;
 
     vec2 m_playerPosition;
 

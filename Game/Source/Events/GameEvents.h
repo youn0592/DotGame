@@ -33,3 +33,58 @@ public:
 protected:
 
 };
+
+class GameOverFromEvent : public fw::Event
+{
+public:
+    GameOverFromEvent()
+    {
+
+    }
+    virtual ~GameOverFromEvent() {}
+
+    static const char* GetStaticEventType() { return "GameOverFromEvent"; }
+    virtual const char* GetType() override { return GetStaticEventType(); }
+
+protected:
+};
+
+class GameWinFromEvent : public fw::Event
+{
+public:
+
+    GameWinFromEvent() {
+
+    }
+    virtual ~GameWinFromEvent() {}
+
+    static const char* GetStaticEventType() { return "GameWinFromEvent"; }
+    virtual const char* GetType() { return GetStaticEventType(); }
+
+protected:
+
+};
+
+class LevelWinFromEvent : public fw::Event
+{
+public:
+    LevelWinFromEvent() {}
+    virtual ~LevelWinFromEvent() {}
+
+    static const char* GetStaticEventType() { return "LevelWinFromEvent"; }
+    virtual const char* GetType() { return GetStaticEventType(); }
+protected:
+
+};
+
+class ResetFromEvent : public fw::Event {
+public:
+    ResetFromEvent() {}
+    virtual ~ResetFromEvent() {}
+
+    static const char* GetStaticEventType() { return "ResetFromEvent"; }
+    virtual const char* GetType() { return GetStaticEventType(); }
+
+protected:
+
+};

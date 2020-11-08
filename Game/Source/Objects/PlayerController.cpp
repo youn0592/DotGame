@@ -31,6 +31,7 @@ void PlayerController::OnEvent(fw::Event* pEvent)
                 if (pInputEvent->GetKeyCode() == 'A') { m_Flags |= Mask::Left; }
                 if (pInputEvent->GetKeyCode() == 'D') { m_Flags |= Mask::Right; }
                 if (pInputEvent->GetKeyCode() == VK_SHIFT) { m_Flags |= Mask::Boost; }
+                if (pInputEvent->GetKeyCode() == 'R') { m_Flags |= Mask::Reset; }
             }
 
             if (pInputEvent->GetDeviceState() == fw::InputEvent::DeviceState::Released)
@@ -40,6 +41,7 @@ void PlayerController::OnEvent(fw::Event* pEvent)
                 if (pInputEvent->GetKeyCode() == 'A') { m_Flags &= ~Left; }
                 if (pInputEvent->GetKeyCode() == 'D') { m_Flags &= ~Right; }
                 if (pInputEvent->GetKeyCode() == VK_SHIFT) { m_Flags &= ~Boost; }
+                if (pInputEvent->GetKeyCode() == 'R') { m_Flags &= ~Reset; }
             }
         }
     }
