@@ -20,6 +20,7 @@ project "Game"
 		"Game/Data/**.frag",
 		"premake5.lua",
 		"GenerateProjectFiles.bat",
+		"README.txt",
 	}
 	includedirs{
 		"Game/Source",

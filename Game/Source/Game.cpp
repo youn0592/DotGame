@@ -330,6 +330,7 @@ void Game::GameText()
 
     if (m_MenuActive == true) {
         ImGui::Begin("Main Menu");
+        ImGui::Text("Dot Game");
         ImGui::Text("Welcome!");
         if (ImGui::Button("Level Mode")) {
             m_LevelActive = true;
