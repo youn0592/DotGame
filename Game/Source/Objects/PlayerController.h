@@ -11,7 +11,8 @@ public:
         Left = 4,
         Right = 8,
         Boost = 16,
-        Reset = 32
+        Reset = 32,
+        Menu = 64
     };
     
 

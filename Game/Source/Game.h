@@ -19,6 +19,8 @@ public:
     virtual void Update(float deltaTime) override;
     virtual void Draw() override;
 
+    void GameText();
+
 
 
     Player* GetPlayer() { return m_pPlayer; }
@@ -30,15 +32,19 @@ protected:
     float m_Rads = 0.3f;
     fw::vec2 m_Mid = vec2(5, 5);
     bool m_isFilled = true;
+    int m_enemySpawns = 1;
 
     //Arena Members
     float m_ArenaRad = 5.0f;;
 
     //Timers
     float m_Timer = 0.0f;
-    float m_TimerSpawn = 0.5f;
+    float m_TimerSpawn = 0.7f;
     float m_LevelTimer = 0;
+    float m_SurvivalTimer = 0;
     
+    bool m_MenuActive = true;
+    bool m_LevelActive = true;
     bool m_HasLost = false;
     bool m_HasWon = false;
     bool m_Transition = false;
@@ -55,7 +61,10 @@ protected:
     fw::Mesh* m_Arena = nullptr;
     fw::Mesh* m_Character = nullptr;
 
-    fw::Mesh* m_Enemy = nullptr;
+    //Enemies
+    fw::Mesh* m_EnemyGreen = nullptr;
+    fw::Mesh* m_EnemyWhite = nullptr;
+    fw::Mesh* m_EnemyYellow = nullptr;
 
     Player* m_pPlayer = nullptr;
     std::vector<fw::GameObject*> m_pObjects;

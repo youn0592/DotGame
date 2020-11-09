@@ -37,8 +37,16 @@ Game::~Game()
         delete m_pPlayer;
     }*/
 
-    if (m_Enemy != nullptr) {
-        delete m_Enemy;
+    if (m_EnemyGreen != nullptr) {
+        delete m_EnemyGreen;
+    }
+
+    if (m_EnemyWhite != nullptr)
+    {
+       delete m_EnemyWhite;
+    }
+    if (m_EnemyYellow != nullptr) {
+        delete m_EnemyYellow;
     }
 
     delete m_pEventManager;
@@ -78,9 +86,16 @@ void Game::CreateMesh()
     m_Arena->CreateCircle(m_ArenaRad, 100, false);
     m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
 
-    m_Enemy = new fw::Mesh();
-    m_Enemy->CreateCircle(0.3, 4, true);
-   
+    //Enemy Mesh's
+    {
+        m_EnemyGreen = new fw::Mesh();
+        m_EnemyGreen->CreateCircle(0.3, 4, true);
+        m_EnemyWhite = new fw::Mesh();
+        m_EnemyWhite->CreateCircle(0.3, 6, true);
+        m_EnemyYellow = new fw::Mesh();
+        m_EnemyYellow->CreateCircle(0.3, 5, true);
+    }
+
     m_pPlayer = new Player("Character", m_Mid, m_pPlayerController, m_Character, m_pShader, this, fw::vec4::Blue());
     m_pObjects.push_back(m_pPlayer);
     m_pObjects.push_back(new fw::GameObject("Circle", m_Mid, m_Arena, m_pShader, this, fw::vec4::Red()));
@@ -114,13 +129,22 @@ void Game::OnEvent(fw::Event* pEvent)
         {
             AddFromGameEvent* pAddFromGameEvent = static_cast<AddFromGameEvent*>(pEvent);
 
+            int RandNum = rand() % m_enemySpawns;
+
             const float PI = 3.1415926f;
             float spawnAngle = float(rand() % 360);
             spawnAngle *= PI / 180;
 
             vec2 enemyPos = m_Mid + vec2(cosf(spawnAngle), (sinf(spawnAngle))) * m_ArenaRad;
-
-            m_pObjects.push_back(new Enemy("Enemy", enemyPos, m_playerPosition, m_Enemy, m_pShader, this, fw::vec4::Green()));
+            if (RandNum == 0) {
+                m_pObjects.push_back(new Enemy("Enemy", RandNum, enemyPos, m_playerPosition, m_EnemyGreen, m_pShader, this, fw::vec4::Green()));
+            }
+            else if (RandNum == 1) {
+                m_pObjects.push_back(new Enemy("Enemy", RandNum, enemyPos, m_playerPosition, m_EnemyYellow, m_pShader, this, fw::vec4::Yellow()));
+            }
+            else if (RandNum == 2) {
+                m_pObjects.push_back(new Enemy("Enemy", RandNum, enemyPos, m_playerPosition, m_EnemyWhite, m_pShader, this, fw::vec4::White()));
+            }
         }
 
         if (pEvent->GetType() == GameOverFromEvent::GetStaticEventType())
@@ -139,10 +163,12 @@ void Game::OnEvent(fw::Event* pEvent)
                     m_pEventManager->AddEvent(new RemoveFromGameEvent(pObject));
                 }
             }
-
-            m_Level = 1;
-            m_ArenaRad = 5.0f;
-            m_Arena->CreateCircle(m_ArenaRad, 100, false);
+            if (m_LevelActive == true) {
+                m_Level = 1;
+                m_ArenaRad = 5.0f;
+                m_Arena->CreateCircle(m_ArenaRad, 100, false);
+                m_enemySpawns = 1;
+            }
 
 
             m_pPlayer->SetPosition(m_Mid);
@@ -150,10 +176,14 @@ void Game::OnEvent(fw::Event* pEvent)
             m_LevelTimer = 0;
             m_HasWon = false;
             m_HasLost = false;
+            m_SurvivalTimer = 0;
         }
         if (pEvent->GetType() == LevelWinFromEvent::GetStaticEventType())
         {
             m_Transition = true;
+        }
+        if (pEvent->GetType() == MenuFromEvent::GetStaticEventType()) {
+            m_MenuActive = true;
         }
     }
 
@@ -165,85 +195,54 @@ void Game::Update(float deltaTime)
     if (m_pPlayerController->WasNewlyPressed(PlayerController::Mask::Reset)) {
         m_pEventManager->AddEvent(new ResetFromEvent());
     }
-
+    else if (m_pPlayerController->WasNewlyPressed(PlayerController::Mask::Menu)) {
+        m_pEventManager->AddEvent(new ResetFromEvent());
+        m_pEventManager->AddEvent(new MenuFromEvent());
+    }
     m_playerPosition = m_pPlayer->GetPosition();
 
     //Run Timer
-    if (m_HasLost == false && m_HasWon == false) {
-        if (m_Transition == false) {
-            m_Timer += deltaTime;
-            if (m_Timer >= m_TimerSpawn)
-            {
-                m_pEventManager->AddEvent(new AddFromGameEvent());
+    if(m_MenuActive == false){
+        if (m_HasLost == false && m_HasWon == false) {
+            if (m_Transition == false) {
+                m_Timer += deltaTime;
+                if (m_Timer >= m_TimerSpawn)
+                {
+                    m_pEventManager->AddEvent(new AddFromGameEvent());
 
-                m_Timer = 0;
+                    m_Timer = 0;
+                }
+            }
+
+            if (m_LevelActive == true) {
+                m_LevelTimer += deltaTime;
+                if (m_LevelTimer >= 5.0f)
+                {
+                    m_Transition = true;
+                }
+
+                if (m_LevelTimer >= 7.0f)
+                {
+                    m_Transition = false;
+                    m_LevelTimer = 0.0f;
+                    m_Level++;
+                    if (m_enemySpawns != 3) {
+                        m_enemySpawns++;
+                    }
+                }
+                if (m_Level == 6) {
+                    m_pEventManager->AddEvent(new GameWinFromEvent());
+                }
+            }
+            else {
+                m_SurvivalTimer += deltaTime;
             }
         }
-
-        m_LevelTimer += deltaTime;
-        if (m_LevelTimer >= 3.0f)
-        {
-            m_Transition = true;
-        }
-
-        if (m_LevelTimer >= 5.0f)
-        {
-            m_Transition = false;
-            m_LevelTimer = 0.0f;
-            m_Level++;
-        }
-        if (m_Level == 6) {
-            m_pEventManager->AddEvent(new GameWinFromEvent());
-        }
-
-        ImGui::Begin("How To Play");
-        ImGui::Text("Survive for 10 seconds to win");
-        ImGui::Text("%f", (m_LevelTimer));
-        ImGui::Text("Level: %i", (m_Level));
-        ImGui::Text("Press 'Left Shift' to Boost");
-        ImGui::Text("Press 'R' to Reset");
-        ImGui::End();
     }
 
     //Circle Debug List
-    {
-        if (m_HasLost == true) {
-            ImGui::Begin("You Lose!");
-            ImGui::Text("Game Over");
-            ImGui::Text("Press 'R' to reset and try again");
-            ImGui::End();
-        }
-        else if (m_HasWon == true) {
-            ImGui::Begin("You Win!");
-            ImGui::Text("You Win!");
-            ImGui::Text("Press 'R' to reset and try again");
-            ImGui::End();
-        }
-        else if (m_Transition == true) {
-            ImGui::Begin("Level Win");
-            ImGui::Text("You beat Level: %i", (m_Level));
-            ImGui::End();
-        }
-
-        //if (ImGui::SliderInt("Player Sides", &m_verts, 3, 100))
-        //{
-        //    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
-        //}
-
-        //if (ImGui::SliderFloat("Player Radius", &m_Rads, 0.1f, 3.0f))
-        //{
-        //    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
-        //}
-
-        //if (ImGui::Checkbox("Player Is Filled", &m_isFilled)) {
-
-        //    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
-        //}
-        if (ImGui::SliderFloat("Spawn Timer", &m_TimerSpawn, 0.0f, 5.0f)) 
-        {
-
-        }
-    }
+        GameText();
+    
 
     //Circle staying in the Arena
     if((m_pPlayer->GetPosition() - m_Mid).magnitude() >= m_ArenaRad - m_Rads )
@@ -256,36 +255,38 @@ void Game::Update(float deltaTime)
 
 
     //Updating Characters and Collision
-    if (m_Transition == false) {
-        for (auto it = m_pObjects.begin(); it != m_pObjects.end(); it++)
-        {
-            fw::GameObject* pObject = *it;
-
-            pObject->Update(deltaTime);
-
-            if (pObject->GetName() == "Enemy")
+    if (m_MenuActive == false) {
+        if (m_Transition == false) {
+            for (auto it = m_pObjects.begin(); it != m_pObjects.end(); it++)
             {
-                if ((pObject->GetPosition() - m_Mid).magnitude() >= m_ArenaRad) {
+                fw::GameObject* pObject = *it;
 
-                    m_pEventManager->AddEvent(new RemoveFromGameEvent(pObject));
+                pObject->Update(deltaTime);
 
-                }
-
-                //Collision
+                if (pObject->GetName() == "Enemy")
                 {
-                    float disSqrd = sqrt((pObject->GetPosition().x - m_pPlayer->GetPosition().x) * (pObject->GetPosition().x - m_pPlayer->GetPosition().x) + (pObject->GetPosition().y - m_pPlayer->GetPosition().y) * (pObject->GetPosition().y - m_pPlayer->GetPosition().y));
-                    float RadiiSqrd = (pObject->GetRadius() + m_pPlayer->GetRadius()) * (pObject->GetRadius() + m_pPlayer->GetRadius());
-                    bool IsCollide = disSqrd <= RadiiSqrd;
+                    if ((pObject->GetPosition() - m_Mid).magnitude() >= m_ArenaRad) {
 
-                    if (IsCollide == true) 
+                        m_pEventManager->AddEvent(new RemoveFromGameEvent(pObject));
+
+                    }
+
+                    //Collision
                     {
-                        m_pEventManager->AddEvent(new GameOverFromEvent());
+                        float disSqrd = sqrt((pObject->GetPosition().x - m_pPlayer->GetPosition().x) * (pObject->GetPosition().x - m_pPlayer->GetPosition().x) + (pObject->GetPosition().y - m_pPlayer->GetPosition().y) * (pObject->GetPosition().y - m_pPlayer->GetPosition().y));
+                        float RadiiSqrd = (pObject->GetRadius() + m_pPlayer->GetRadius()) * (pObject->GetRadius() + m_pPlayer->GetRadius());
+                        bool IsCollide = disSqrd <= RadiiSqrd;
+
+                        if (IsCollide == true)
+                        {
+                            m_pEventManager->AddEvent(new GameOverFromEvent());
+                        }
                     }
                 }
+
+
+
             }
-
-
-
         }
     }
 
@@ -322,6 +323,92 @@ void Game::Draw()
 
     m_pImGuiManager->EndFrame();
 
+}
+
+void Game::GameText()
+{
+
+    if (m_MenuActive == true) {
+        ImGui::Begin("Main Menu");
+        ImGui::Text("Welcome!");
+        if (ImGui::Button("Level Mode")) {
+            m_LevelActive = true;
+            m_MenuActive = false;
+            m_enemySpawns = 1;
+        }
+        if (ImGui::Button("Survival Mode")) {
+            m_LevelActive = false;
+            m_enemySpawns = 3;
+            m_MenuActive = false;
+        }
+        ImGui::End();
+    }
+    else {
+        if (m_LevelActive == true) {
+            ImGui::Begin("Levels Rules & Stats");
+            ImGui::Text("Beat 5 levels to win");
+            ImGui::Text("Survive for 5 seconds to win level");
+            ImGui::Text("Arena will shrink every level");
+            ImGui::Text("Current Level: %i", (m_Level));
+            ImGui::Text("Current Time: %.1f", (m_LevelTimer));
+            ImGui::End();
+        }
+        else {
+            ImGui::Begin("Survival Rules & Stats");
+            ImGui::Text("Survive as long as possible");
+            ImGui::Text("All Enemies are active");
+            ImGui::Text("Time Survived: %.2f", (m_SurvivalTimer));
+            ImGui::End();
+        }
+    }
+
+    if (m_HasLost == true) {
+        ImGui::Begin("You Lose!");
+        ImGui::Text("Game Over");
+        ImGui::Text("Press 'R' to reset and try again");
+        ImGui::Text("Press 'M' to go back to the menu");
+        if (m_LevelActive != true) {
+            ImGui::Text("You Survived: %.1f seconds", (m_SurvivalTimer));
+        }
+        else {
+            ImGui::Text("You made it to level %i", (m_Level));
+        }
+        ImGui::End();
+    }
+    else if (m_HasWon == true) {
+        ImGui::Begin("You Win!");
+        ImGui::Text("You Win!");
+        ImGui::Text("Press 'R' to reset and try again");
+        ImGui::Text("Press 'M' to go back to the menu");
+        ImGui::End();
+    }
+    else if (m_Transition == true) {
+        ImGui::Begin("Level Win");
+        ImGui::Text("You beat Level: %i", (m_Level));
+        ImGui::End();
+    }
+    
+    //Debug Menu
+    {
+        //if (ImGui::SliderInt("Player Sides", &m_verts, 3, 100))
+//{
+//    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+//}
+
+//if (ImGui::SliderFloat("Player Radius", &m_Rads, 0.1f, 3.0f))
+//{
+//    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+//}
+
+//if (ImGui::Checkbox("Player Is Filled", &m_isFilled)) {
+
+//    m_Character->CreateCircle(m_Rads, m_verts, m_isFilled);
+//}
+        //if (ImGui::SliderFloat("Spawn Timer", &m_TimerSpawn, 0.0f, 5.0f))
+        //{
+
+        //}
+    }
 }
 
 

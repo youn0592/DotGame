@@ -88,3 +88,15 @@ public:
 protected:
 
 };
+
+class MenuFromEvent : public fw::Event {
+public:
+    MenuFromEvent() {}
+    virtual ~MenuFromEvent() {}
+
+    static const char* GetStaticEventType() { return "MenuFromEvent"; }
+    virtual const char* GetType() { return GetStaticEventType(); }
+
+protected:
+
+};
