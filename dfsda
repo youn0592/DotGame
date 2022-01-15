@@ -1,0 +1,34 @@
+[33mcommit 1e01dbceba4834592d21ccc25dad7270ca62c02e[m[33m ([m[1;36mHEAD -> [m[1;32mDotGame[m[33m)[m
+Author: youn0592 <youn0592@algonquinlive.com>
+Date:   Mon Nov 9 00:10:08 2020 -0500
+
+    Added Readme Txt
+    
+    Added a Read Me
+
+[33mcommit ab8a90b33f799ecc83187e916fae22f83b900a27[m
+Author: youn0592 <youn0592@algonquinlive.com>
+Date:   Sun Nov 8 23:31:43 2020 -0500
+
+    Finished Assignment 4
+    
+    -Added More Speed Up Enemy
+    -Added Sine Wave Enemy
+    -Added Main Menu
+    -Added Survival Game Mode
+    -Added Levels Gamemode
+    -Added Random Spawn
+    -Added GameText() Function
+    -Added Pop Out Windows for Levels, Survival, Win States, Lose States and Rules/Stats
+
+[33mcommit 47b7d5ae4362b6a9b5e5248293eeec7032d2dc32[m
+Author: youn0592 <youn0592@algonquinlive.com>
+Date:   Sun Nov 8 00:09:24 2020 -0500
+
+    Added Collision Stuff
+    
+    -Added Collision to code
+    -Added Win, Lose, and Reset states
+    -Added Circle getting smaller via levels
+    -Added more Events
+    -Added Memory Management
