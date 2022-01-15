@@ -291,7 +291,7 @@ void Game::Update(float deltaTime)
     }
 
     if (m_Transition == true) {
-        m_ArenaRad -= 0.005;
+        m_ArenaRad -= 0.001;
         m_Arena->CreateCircle(m_ArenaRad, 100, false);
     }
 

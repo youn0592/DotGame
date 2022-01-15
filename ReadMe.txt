@@ -1,6 +1,5 @@
 Game and Graphics II - A4 - Dot Game.
 Christian Young
-Novemember 8th 2020
 
 Level Transitions:
 	-Player and Enemies Freeze.
