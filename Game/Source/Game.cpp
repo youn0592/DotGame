@@ -89,11 +89,11 @@ void Game::CreateMesh()
     //Enemy Mesh's
     {
         m_EnemyGreen = new fw::Mesh();
-        m_EnemyGreen->CreateCircle(0.3, 4, true);
+        m_EnemyGreen->CreateCircle(0.3f, 4, true);
         m_EnemyWhite = new fw::Mesh();
-        m_EnemyWhite->CreateCircle(0.3, 6, true);
+        m_EnemyWhite->CreateCircle(0.3f, 6, true);
         m_EnemyYellow = new fw::Mesh();
-        m_EnemyYellow->CreateCircle(0.3, 5, true);
+        m_EnemyYellow->CreateCircle(0.3f, 5, true);
     }
 
     m_pPlayer = new Player("Character", m_Mid, m_pPlayerController, m_Character, m_pShader, this, fw::vec4::Blue());
@@ -291,7 +291,7 @@ void Game::Update(float deltaTime)
     }
 
     if (m_Transition == true) {
-        m_ArenaRad -= 0.001;
+        m_ArenaRad -= 0.001f;
         m_Arena->CreateCircle(m_ArenaRad, 100, false);
     }
 
