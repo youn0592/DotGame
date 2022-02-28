@@ -1,5 +1,10 @@
-Game and Graphics II - A4 - Dot Game.
+In order to start the game, Run the premake5.exe and GenerateProjectFiles which will create a build folder
+once the build folder has been created, open Game.sln from within the Build Folder which will open Visual Studio 
+and allow you to play the game.
+
 Christian Young
+
+Features: 
 
 Level Transitions:
 	-Player and Enemies Freeze.
